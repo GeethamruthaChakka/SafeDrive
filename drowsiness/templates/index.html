@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<link rel="icon" href="data:,">
+
+<title>SafeDrive Analyzer</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Driver Drowsiness Detection</h1>
+
+<!-- <p>Select Image</p> -->
+
+<div class="buttons">
+
+<input type="file" id="imageInput" hidden>
+
+<button onclick="document.getElementById('imageInput').click()">
+Browse Image
+</button>
+
+</div>
+
+<div id="preview"></div>
+
+<div id="result"></div>
+
+</div>
+
+
+<script>
+
+document.getElementById("imageInput").onchange=function(){
+
+let file=this.files[0]
+
+if(!file) return   // prevents crash
+
+let form=new FormData()
+form.append("file",file)
+
+/* IMAGE PREVIEW */
+
+const imgPreview=document.createElement("img")
+imgPreview.width=400
+imgPreview.src=URL.createObjectURL(file)
+
+document.getElementById("preview").innerHTML=""
+document.getElementById("preview").appendChild(imgPreview)
+
+/* SEND IMAGE TO SERVER */
+
+fetch("/upload_image",{method:"POST",body:form})
+.then(res=>res.json())
+.then(data=>{
+
+document.getElementById("result").innerHTML=
+`<h2>Status: ${data.result}</h2>`
+
+})
+
+}
+
+</script>
+
+</body>
+</html>
